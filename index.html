@@ -702,7 +702,7 @@ const DIFF={
   normal:{key:'normal',name:'보통',tag:'N',hp:1.25,bossHp:1.2,score:1.5,spd:1,rate:1,midboss:true,hard:false,maxHp:80,desc:'내 체력 80 · 적 체력 조금 ↑ · 중간 보스 · 점수 ×1.5'},
   hard:{key:'hard',name:'어려움',tag:'H',hp:1.6,bossHp:1.5,score:2.2,spd:1.12,rate:.8,midboss:true,hard:true,maxHp:60,desc:'내 체력 60 · 보스 강화 · 휘는·가속·반격탄 · 점수 ×2.2'},
   // 헬: 탄막 숙련자용. 어려움 패턴에 탄 수 1.5배(속도는 1.05배만), 보조 장치 없음, 스치기 비중 큼
-  hell:{key:'hell',name:'헬',tag:'X',hp:1.6,bossHp:1.5,score:3,spd:1.18,rate:.8,midboss:true,hard:true,hell:true,dens:1.5,maxHp:30,desc:'내 체력 30 · 탄막 1.5배 · 불비·폭풍 무적 없음 · 스치기 · 점수 ×3'},
+  hell:{key:'hell',name:'헬',tag:'X',hp:1.6,bossHp:1.5,score:3,spd:1.18,rate:.8,midboss:true,hard:true,hell:true,dens:1.5,maxHp:30,healItem:12,desc:'내 체력 30 · 탄막 1.5배 · 불비·폭풍 무적 없음 · 스치기 · 점수 ×3'},
 };
 function hellUnlocked(){ return DEBUG||!!store.get('hellUnlocked',false)||store.get('local',[]).some(r=>(r.difficulty==='hard'||r.difficulty==='hell')&&r.clear_time_ms!=null); }
 let DF=DIFF[store.get('diff','easy')]||DIFF.easy; if(DF.hell&&!hellUnlocked()) DF=DIFF.hard;
@@ -1103,7 +1103,8 @@ function awaken(){ const p=player; toast('구미호 각성','아홉 꼬리 · �
   for(let i=0;i<3;i++) part('ring',p.x,p.y,0,0,.6+i*.25,i%2?C.gold:'#fff1d6',6,60+i*40);
   for(let i=0;i<40;i++){ const a=i/40*TAU; part('spark',p.x,p.y,Math.cos(a)*130,Math.sin(a)*130,.8,pick([C.gold,'#fff1d6',C.fire2]),2); } }
 function pickup(t){ const p=player;
-  if(t==='heal'){ const h=healAmt(.2); p.hp=Math.min(p.maxHp,p.hp+h); SFX.heal(); toast('여우 떡','체력 +'+h,null,0); for(let i=0;i<12;i++) part('spark',p.x+rand(-6,6),p.y+rand(-6,6),rand(-20,20),rand(-60,-20),.6,pick(['#8fe07a','#e88fa0','#fff1d6']),1); }
+  if(t==='heal'){ const h=DF.healItem??healAmt(.2);   // 헬은 어려움과 같은 +12
+    p.hp=Math.min(p.maxHp,p.hp+h); SFX.heal(); toast('여우 떡','체력 +'+h,null,0); for(let i=0;i<12;i++) part('spark',p.x+rand(-6,6),p.y+rand(-6,6),rand(-20,20),rand(-60,-20),.6,pick(['#8fe07a','#e88fa0','#fff1d6']),1); }
   else if(t==='orb'){ if(p.orbs<7){ p.orbs++; toast('여우구슬 '+p.orbs+'개',ORB_INFO[p.orbs],null,1); } else { addScore(3000,'item'); toast('여우구슬 가득',pts(3000),null,0); }
     SFX.item(); part('ring',p.x,p.y,0,0,.4,'#bfe3ff',4,34); }
   else evolve(); }
