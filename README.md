@@ -175,11 +175,11 @@
 
 ## 온라인 랭킹 설정 (Supabase)
 
-설정하지 않으면 **같은 기기 안에서만 겨루는 오프라인 랭킹**으로 동작합니다. 다른 기기의 플레이어끼리 겨루려면 아래 순서대로 공용 저장소를 만드세요.
+**지금 배포본은 온라인 랭킹이 켜져 있습니다.** 공개 키는 원래 브라우저에 노출되도록 만든 키이고, 보안은 아래 SQL의 규칙(조회·추가만 허용, 수정·삭제 불가)이 지킵니다. 설정을 비우면 **같은 기기 안에서만 겨루는 오프라인 랭킹**으로 동작합니다. 다른 기기의 플레이어끼리 겨루려면 아래 순서대로 공용 저장소를 만드세요.
 
 1. [supabase.com](https://supabase.com)에서 무료 프로젝트를 만듭니다.
 2. 왼쪽 메뉴 **SQL Editor**에서 아래 SQL을 실행합니다.
-3. **Project Settings → API**에서 `Project URL`과 `anon public` 키를 복사합니다.
+3. **Project Settings → API**(또는 Data API · API Keys)에서 `Project URL`과 공개 키(`anon public`의 `eyJ…` 또는 `sb_publishable_…`)를 복사합니다. `service_role`·`secret` 키는 관리자용이라 절대 넣으면 안 됩니다.
 4. `index.html` 맨 위의 `window.GUMIHO_CONFIG`에 두 값을 넣습니다.
 
 ```js
@@ -206,6 +206,7 @@ create table public.scores (
 alter table public.scores enable row level security;
 create policy "scores_read"   on public.scores for select to anon using (true);
 create policy "scores_insert" on public.scores for insert to anon with check (true);
+grant select, insert on public.scores to anon;
 -- update / delete 정책은 만들지 않음 → RLS가 막음
 
 -- 닉네임마다 최고 기록 1개만 보여 주는 랭킹 뷰

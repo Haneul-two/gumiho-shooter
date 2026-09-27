@@ -13,8 +13,8 @@
    README의 "온라인 랭킹 설정" 순서대로 Supabase 프로젝트를 만들고 아래 두 값을 채우세요.
    비워 두면 같은 기기 안에서만 겨루는 오프라인 랭킹으로 동작합니다. */
 window.GUMIHO_CONFIG = {
-  SUPABASE_URL: '',       // 예: 'https://abcd1234.supabase.co'
-  SUPABASE_ANON_KEY: ''   // Project Settings → API → anon public key
+  SUPABASE_URL: 'https://aqwgoqawbfjhrjwsnvwy.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_-5_3QY2qmtTsx-EerF1AZg_cUs0Uduw'   // 공개 키(publishable/anon). secret·service_role 키는 절대 넣지 말 것
 };
 </script>
 <style>
@@ -1319,7 +1319,7 @@ function validNick(s){ if(!/^[가-힣a-zA-Z0-9]{2,10}$/.test(s)) return '2~10자
 async function fetchT(url,opt={},ms=6000){ const ac=new AbortController(), id=setTimeout(()=>ac.abort(),ms); try{ return await fetch(url,{...opt,signal:ac.signal}); } finally{ clearTimeout(id); } }
 const Rank={
   online(){ return !!(CONFIG.SUPABASE_URL&&CONFIG.SUPABASE_ANON_KEY); },
-  base(){ return CONFIG.SUPABASE_URL.replace(/\/+$/,'')+'/rest/v1/'; },
+  base(){ return CONFIG.SUPABASE_URL.replace(/\/+$/,'').replace(/\/rest\/v1$/,'')+'/rest/v1/'; },   // .../rest/v1/ 까지 넣어도 동작
   hdr(extra){ return Object.assign({apikey:CONFIG.SUPABASE_ANON_KEY,Authorization:'Bearer '+CONFIG.SUPABASE_ANON_KEY},extra||{}); },
   saveLocal(rec){ const a=store.get('local',[]); if(a.some(r=>r.id===rec.id)) return; a.push(Object.assign({created_at:new Date().toISOString()},rec)); a.sort((x,y)=>y.score-x.score); store.set('local',a.slice(0,200)); },
   best(rows){ const m=new Map(); for(const r of rows){ const o=m.get(r.nickname); if(!o||r.score>o.score) m.set(r.nickname,r); }
