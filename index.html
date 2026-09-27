@@ -702,7 +702,7 @@ const DIFF={
   normal:{key:'normal',name:'보통',tag:'N',hp:1.25,bossHp:1.2,score:1.5,spd:1,rate:1,midboss:true,hard:false,maxHp:80,desc:'내 체력 80 · 적 체력 조금 ↑ · 중간 보스 · 점수 ×1.5'},
   hard:{key:'hard',name:'어려움',tag:'H',hp:1.6,bossHp:1.5,score:2.2,spd:1.12,rate:.8,midboss:true,hard:true,maxHp:60,desc:'내 체력 60 · 보스 강화 · 휘는·가속·반격탄 · 점수 ×2.2'},
   // 헬: 탄막 숙련자용. 어려움 패턴에 탄 수 1.5배(속도는 1.05배만), 보조 장치 없음, 스치기 비중 큼
-  hell:{key:'hell',name:'헬',tag:'X',hp:1.6,bossHp:1.5,score:3,spd:1.18,rate:.8,midboss:true,hard:true,hell:true,dens:1.5,maxHp:30,desc:'내 체력 30 · 탄막 1.5배 · 불비·무적·회복 없음 · 스치기 · 점수 ×3'},
+  hell:{key:'hell',name:'헬',tag:'X',hp:1.6,bossHp:1.5,score:3,spd:1.18,rate:.8,midboss:true,hard:true,hell:true,dens:1.5,maxHp:30,desc:'내 체력 30 · 탄막 1.5배 · 불비·폭풍 무적 없음 · 스치기 · 점수 ×3'},
 };
 function hellUnlocked(){ return DEBUG||!!store.get('hellUnlocked',false)||store.get('local',[]).some(r=>(r.difficulty==='hard'||r.difficulty==='hell')&&r.clear_time_ms!=null); }
 let DF=DIFF[store.get('diff','easy')]||DIFF.easy; if(DF.hell&&!hellUnlocked()) DF=DIFF.hard;
@@ -745,7 +745,7 @@ function explode(x,y,s){ const n=6+s*8; for(let i=0;i<n;i++){ const a=Math.rando
   for(let i=0;i<s*2;i++) part('smoke',x+rand(-4,4),y+rand(-4,4),rand(-10,10),rand(-20,-5),rand(.5,.9),'#2a2433',3+s); }
 function cancelBullets(x,y,r,score){ let n=0; for(const b of EB.list){ if(b.dead) continue; if((b.x-x)**2+(b.y-y)**2<r*r){ b.dead=true; n++; part('cancel',b.x,b.y,rand(-10,10),rand(-40,-20),.5,C.gold,1); if(score){ addScore(BAL.cancelPts.event,'cancel'); countCancel('event'); } } } if(n) SFX.cancel(); }
 function later(d,fn){ G.later.push({at:G.stageT+d,fn}); }
-function spawnItem(type,x,y){ if(type==='heal'&&DF.hell) return; items.push({type,x:x??rand(40,W-40),y:y??-10,vx:(Math.random()<.5?-1:1)*22,t:0,dead:false}); }
+function spawnItem(type,x,y){ items.push({type,x:x??rand(40,W-40),y:y??-10,vx:(Math.random()<.5?-1:1)*22,t:0,dead:false}); }
 
 // ================================================================
 //  적 — 한국 전통 괴물
